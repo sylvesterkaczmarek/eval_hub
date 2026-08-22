@@ -59,7 +59,7 @@ class MrcrUtilsTest(unittest.TestCase):
         tokenizer=_tokenizer,
     )
 
-    self.assertLen(samples, 1)
+    self.assertEqual(len(samples), 1)
 
   @mock.patch.object(mrcr_utils, "generate_queries_and_answers")
   @mock.patch.object(mrcr_utils, "create_final_transcript_and_metadata")
@@ -97,7 +97,7 @@ class MrcrUtilsTest(unittest.TestCase):
         tokenizer=_tokenizer,
     )
 
-    self.assertLen(bucket_samples[(4096, 8192)], 3)
+    self.assertEqual(len(bucket_samples[(4096, 8192)]), 3)
     requested_limits = [call.args[4] for call in mock_generate_queries.call_args_list]
     self.assertEqual(requested_limits, [3, 1])
 
