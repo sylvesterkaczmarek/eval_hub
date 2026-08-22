@@ -135,6 +135,20 @@ def get_api_key() -> str | None:
     return None
 
 
+def find_existing_grade(
+    sample_path: pathlib.Path, grader_model: str
+) -> pathlib.Path | None:
+  """Finds a prior grade for a sample from the same grader model."""
+  grade_pattern = re.compile(
+      rf"^grade_{re.escape(grader_model)}_\d{{8}}-\d{{6}}_"
+      rf"{re.escape(sample_path.stem)}\.json$"
+  )
+  for grade_path in sample_path.parent.glob("grade_*.json"):
+    if grade_pattern.fullmatch(grade_path.name):
+      return grade_path
+  return None
+
+
 def grade_gemini_sample(
     input_path: pathlib.Path,
     sample_path: pathlib.Path,
@@ -167,7 +181,7 @@ def grade_gemini_sample(
   )
   output_path = sample_path.parent / output_filename
 
-  if output_path.exists():
+  if find_existing_grade(sample_path, FLAGS.model_name) is not None:
     return "SKIPPED", None, None
 
   logging.info(
