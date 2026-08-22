@@ -98,7 +98,9 @@ class MrcrUtilsTest(unittest.TestCase):
     )
 
     self.assertEqual(len(bucket_samples[(4096, 8192)]), 3)
-    requested_limits = [call.args[4] for call in mock_generate_queries.call_args_list]
+    requested_limits = [
+        call.args[4] for call in mock_generate_queries.call_args_list
+    ]
     self.assertEqual(requested_limits, [3, 1])
 
 
