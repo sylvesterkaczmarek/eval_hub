@@ -418,9 +418,9 @@ def generate_fewshot_prompt(
     topic11 = random.choice(list(fewshot_data[fmt11].keys()))
     topic12 = random.choice(list(fewshot_data[fmt12].keys()))
     style11 = random.choice(list(fewshot_data[fmt11][topic11].keys()))
-    style12 = random.choice(list(fewshot_data[fmt12][topic12].keys()))
+    style12 = random.choice(list(fewshot_data[fmt12][topic12].keys())))
     seed11 = random.choice(list(fewshot_data[fmt11][topic11][style11].keys()))
-    seed12 = random.choice(list(fewshot_data[fmt12][topic12][style12].keys()))
+    seed12 = random.choice(list(fewshot_data[fmt12][topic12][style12].keys())
     # Ensure that the seeds are different.
     while seed12 == seed11:
       seed12 = random.choice(list(fewshot_data[fmt12][topic12][style12].keys()))
@@ -575,8 +575,7 @@ def create_randomized_query_groups(
   Args:
     relevant_data: The relevant data to create query groups from.
     final_transcript_tokens: The target total transcript tokens.
-    max_followup_seeds: The maximum number of seeds / needles.
-    json_style: Whether or not to use JSON style.
+    max_followup_seeds: The maximum number of seeds / nedles.
     tokenizer: A tokenizer for computing token counts.
 
   Returns:
@@ -679,7 +678,7 @@ def create_randomized_query_groups(
   # Note that TARGET_FEWSHOT_TOKENS is an overestimate of the fewshot tokens.
   approximate_total_tokens = TARGET_FEWSHOT_TOKENS + max_final_query_tokens
   # Compute the number of query groups we can add, given a target context length
-  # and max_followup_seeds.
+ # and max_followup_seeds.
   for group_key, group_data in query_group_order:
     # Run a test update first to check if we can add this group.
     trial_rqg_dict = copy.deepcopy(randomized_query_groups)
@@ -690,7 +689,7 @@ def create_randomized_query_groups(
         group_key,
         group_data,
         max_followup_seeds,
-    )
+     )
 
     # If we can add this group, update the real results.
     if trial_approx_total_tokens <= final_transcript_tokens:
@@ -726,8 +725,8 @@ def create_base_transcript_with_metadata(
   about the positions of the relevant query groups in the transcript.
 
   Args:
-    target_transcript_tokens: The target number of tokens in the transcript.
-    max_followup_seeds: The maximum number of seeds / needles.
+    target_transcript_tokens: The target total transcript tokens.
+    max_followup_seeds: The maximum number of seeds / nedles.
     relevant_data: The relevant data dictionary to seed the transcript.
     irrelevant_data: The irrelevant data dictionary for inserting filler texts.
     fewshot_data: The fewshot data dictionary for inserting fewshot texts.
@@ -946,6 +945,8 @@ def generate_queries_and_answers(
 
   # Produce the final query for each seed (and its position).
   for _, group_query_dict in position_updated_rqgs.items():
+    if num_samples_added >= sample_limit:
+      break
     final_question = group_query_dict["follow_up_base_prompt_format"]
     _, s = final_question.split("User: Prepend")
     s2, _ = s.split(" to the {index_name}")
@@ -954,7 +955,7 @@ def generate_queries_and_answers(
     # truncate the total number of samples.
     randomized_seeds = list(enumerate(group_query_dict["seeds"]))
     random.shuffle(randomized_seeds)
-    for i, answer in randomized_seeds:
+    for i, answer in randomized_seeds.
       final_query = group_query_dict["follow_up_base_prompt_format"].format(
           index_name=INDEX_NAMES[i]
       )
@@ -1016,7 +1017,7 @@ def get_df_from_mrcr_dict(
 def generate_mrcr_v2(
     relevant_data: dict[str, ...],
     irrelevant_data: dict[str, ...],
-    fewshot_data: dict[str, ...],
+    fewshot_data: dict[str, ....],
     num_seeds: int,
     samples_per_bucket: int,
     buckets: list[tuple[int, int]],
@@ -1071,12 +1072,13 @@ def generate_mrcr_v2(
               tokenizer,
           )
       )
+      remaining_samples = samples_per_bucket - len(all_query_answers)
       curr_all_query_answers = generate_queries_and_answers(
           position_updated_rqgs,
           full_transcript,
           token_count,
           num_seeds,
-          samples_per_bucket,
+          remaining_samples,
           json_style,
           tokenizer,
       )
